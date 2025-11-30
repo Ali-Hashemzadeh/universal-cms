@@ -1,0 +1,21 @@
+{
+    "permissions": [
+        "manage_sample_module"
+    ],
+    "content_types": [
+        {
+            "name": "Sample",
+            "slug": "sample",
+            "icon": "box",
+            "fields": [
+                {
+                    "label": "Sample Field",
+                    "name": "sample_field",
+                    "type": "text",
+                    "validation": ["required", "min:3"],
+                    "order": 1
+                }
+            ]
+        }
+    ]
+}
