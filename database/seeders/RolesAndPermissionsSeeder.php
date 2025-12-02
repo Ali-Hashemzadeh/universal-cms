@@ -5,18 +5,16 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Reset cached roles and permissions
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        // 1. Reset cached roles and permissions
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // create permissions
+        // 2. Define permissions
         $permissions = [
             'view_entries',
             'create_entries',
@@ -31,15 +29,29 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage_forms',
         ];
 
+        // 3. Create permissions (using firstOrCreate and Explicit Guard)
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission, 
+                'guard_name' => 'web' // <--- Force the guard
+            ]);
         }
 
-        // create roles and assign created permissions
-        $userRole = Role::create(['name' => 'user']);
+        // 4. Create Roles (Explicit Guard)
+        $userRole = Role::firstOrCreate([
+            'name' => 'user', 
+            'guard_name' => 'web'
+        ]);
+        
+        // 5. Assign Permission
+        // Pass the guard explicitly or use the object approach if strings fail
         $userRole->givePermissionTo('view_entries');
 
-        $adminRole = Role::create(['name' => 'admin']);
+        $adminRole = Role::firstOrCreate([
+            'name' => 'admin', 
+            'guard_name' => 'web'
+        ]);
+        
         $adminRole->givePermissionTo(Permission::all());
     }
 }

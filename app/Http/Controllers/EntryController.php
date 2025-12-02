@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\EntryCollection;
 use App\Http\Resources\EntryResource;
 use App\Models\ContentType;
